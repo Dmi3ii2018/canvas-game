@@ -9,6 +9,7 @@
     "eslint": "npx eslint src/**/*.js",
     "prettier": "npx prettier --write .",
     "dev": "npx webpack server",
+    "start": "webpack server",
     "prepare": "husky install"
   },
   "repository": {
