@@ -1,8 +1,11 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
+
+const { NODE_ENV } = process.env;
 
 module.exports = {
-  mode: 'development',
+  mode: NODE_ENV || 'development',
   entry: path.resolve(__dirname, 'src/index.js'),
   output: {
     filename: 'main.js',
@@ -45,6 +48,18 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: path.resolve(__dirname, 'public/index.html'),
     }),
+    new ImageMinimizerPlugin({
+      severityError: 'warning',
+      loader: false,
+      include: /\/assets/,
+      minimizerOptions: {
+        plugins: [
+          ['gifsicle', { interlaced: true }],
+          ['jpegtran', { progressive: true }],
+          ['optipng', { optimizationLevel: 5 }],
+        ],
+      },
+    }),
   ],
   devServer: {
     port: 3000,
@@ -53,4 +68,5 @@ module.exports = {
     hot: true,
     historyApiFallback: true,
   },
+  devtool: NODE_ENV === 'development' ? 'source-map' : false,
 };
