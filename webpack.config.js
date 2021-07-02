@@ -2,7 +2,7 @@ const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
-const { NODE_ENV } = process.env;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
   mode: NODE_ENV || 'development',
