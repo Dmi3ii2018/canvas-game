@@ -2,14 +2,15 @@ import './index.scss';
 
 import SenseiWalk from './assets/Male-1-Walk.png';
 
-const STEP = 10;
+const STEP = 30;
 const FRAME_UPDATE = 100;
 const SPRITE_WIDTH = 48;
 const SPRITE_HEIGHT = 49;
+const CANVAS_LENGTH = 600;
 const SHOTS = 3;
 const KEY_LIST = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
-const MAIN_WAY = {
+const AXIS = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
 };
@@ -35,43 +36,56 @@ const RotationToNumber = {
 
 const DirectionValue = {
   down: {
-    way: MAIN_WAY.VERTICAL,
+    way: AXIS.VERTICAL,
     side: DirectionToNumber.FORWARD,
   },
   left: {
-    way: MAIN_WAY.HORIZONTAL,
+    way: AXIS.HORIZONTAL,
     side: DirectionToNumber.BACKWARD,
   },
   right: {
-    way: MAIN_WAY.HORIZONTAL,
+    way: AXIS.HORIZONTAL,
     side: DirectionToNumber.FORWARD,
   },
   up: {
-    way: MAIN_WAY.VERTICAL,
+    way: AXIS.VERTICAL,
     side: DirectionToNumber.BACKWARD,
   },
 };
-
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
 
 let cycle = 0;
 
 const position = {
-  [MAIN_WAY.HORIZONTAL]: 0,
-  [MAIN_WAY.VERTICAL]: 0,
+  [AXIS.HORIZONTAL]: {
+    value: 0,
+  },
+  [AXIS.VERTICAL]: {
+    value: offscreenBuffering,
+  },
 };
 
 let direction = DIRECTION.DOWN;
-let bottonPressed = false;
+let buttonPressed = false;
+
+const checkPosition = (positionValue) => {
+  const minValue = 0;
+  const maxValue = CANVAS_LENGTH - SPRITE_WIDTH;
+
+  return Math.min(maxValue, Math.max(minValue, positionValue));
+};
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 
 const img = document.createElement('img');
 img.src = SenseiWalk;
 
 function keyDownHandler(evt) {
   if (KEY_LIST.includes(evt.key)) {
-    bottonPressed = true;
+    buttonPressed = true;
+    checkPosition(position[AXIS.HORIZONTAL].value);
   }
+
   switch (evt.key) {
     case 'ArrowLeft':
       direction = DIRECTION.LEFT;
@@ -85,13 +99,14 @@ function keyDownHandler(evt) {
     case 'ArrowDown':
       direction = DIRECTION.DOWN;
       break;
-    default: break;
+    default:
+      break;
   }
 }
 
 function keyUpHandler(evt) {
   if (KEY_LIST.includes(evt.key)) {
-    bottonPressed = false;
+    buttonPressed = false;
   }
 }
 
@@ -100,9 +115,9 @@ document.addEventListener('keyup', keyUpHandler);
 
 img.addEventListener('load', () => {
   setInterval(() => {
-    if (bottonPressed) {
+    if (buttonPressed) {
       const { way, side } = DirectionValue[direction];
-      position[way] += STEP * side;
+      position[way].value += STEP * side;
       cycle = (cycle + 1) % SHOTS;
     }
     ctx.clearRect(0, 0, 600, 600);
@@ -110,9 +125,12 @@ img.addEventListener('load', () => {
       img,
       SPRITE_WIDTH * cycle,
       RotationToNumber[direction],
-      SPRITE_WIDTH, SPRITE_HEIGHT,
-      position[MAIN_WAY.HORIZONTAL], position[MAIN_WAY.VERTICAL],
-      SPRITE_WIDTH, SPRITE_HEIGHT,
+      SPRITE_WIDTH,
+      SPRITE_HEIGHT,
+      checkPosition(position[AXIS.HORIZONTAL].value),
+      checkPosition(position[AXIS.VERTICAL].value),
+      SPRITE_WIDTH,
+      SPRITE_HEIGHT,
     );
   }, FRAME_UPDATE);
 });
