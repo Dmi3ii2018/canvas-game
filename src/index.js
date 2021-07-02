@@ -2,7 +2,7 @@ import './index.scss';
 
 import SenseiWalk from './assets/Male-1-Walk.png';
 
-const STEP = 30;
+const STEP = 10;
 const FRAME_UPDATE = 100;
 const SPRITE_WIDTH = 48;
 const SPRITE_HEIGHT = 49;
@@ -10,12 +10,12 @@ const CANVAS_LENGTH = 600;
 const SHOTS = 3;
 const KEY_LIST = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
-const AXIS = {
+const Axis = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
 };
 
-const DIRECTION = {
+const Direction = {
   LEFT: 'left',
   RIGHT: 'right',
   UP: 'up',
@@ -34,38 +34,29 @@ const RotationToNumber = {
   up: 145,
 };
 
+const DefaultPosition = {
+  [Axis.HORIZONTAL]: (CANVAS_LENGTH / 2) - (SPRITE_WIDTH / 2),
+  [Axis.VERTICAL]: (CANVAS_LENGTH / 2) - (SPRITE_HEIGHT / 2),
+};
+
 const DirectionValue = {
   down: {
-    way: AXIS.VERTICAL,
+    way: Axis.VERTICAL,
     side: DirectionToNumber.FORWARD,
   },
   left: {
-    way: AXIS.HORIZONTAL,
+    way: Axis.HORIZONTAL,
     side: DirectionToNumber.BACKWARD,
   },
   right: {
-    way: AXIS.HORIZONTAL,
+    way: Axis.HORIZONTAL,
     side: DirectionToNumber.FORWARD,
   },
   up: {
-    way: AXIS.VERTICAL,
+    way: Axis.VERTICAL,
     side: DirectionToNumber.BACKWARD,
   },
 };
-
-let cycle = 0;
-
-const position = {
-  [AXIS.HORIZONTAL]: {
-    value: 0,
-  },
-  [AXIS.VERTICAL]: {
-    value: offscreenBuffering,
-  },
-};
-
-let direction = DIRECTION.DOWN;
-let buttonPressed = false;
 
 const checkPosition = (positionValue) => {
   const minValue = 0;
@@ -73,6 +64,20 @@ const checkPosition = (positionValue) => {
 
   return Math.min(maxValue, Math.max(minValue, positionValue));
 };
+
+let cycle = 0;
+
+const position = {
+  [Axis.HORIZONTAL]: {
+    value: DefaultPosition[Axis.HORIZONTAL],
+  },
+  [Axis.VERTICAL]: {
+    value: DefaultPosition[Axis.VERTICAL],
+  },
+};
+
+let direction = Direction.DOWN;
+let buttonPressed = false;
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -83,21 +88,21 @@ img.src = SenseiWalk;
 function keyDownHandler(evt) {
   if (KEY_LIST.includes(evt.key)) {
     buttonPressed = true;
-    checkPosition(position[AXIS.HORIZONTAL].value);
+    checkPosition(position[Axis.HORIZONTAL].value);
   }
 
   switch (evt.key) {
     case 'ArrowLeft':
-      direction = DIRECTION.LEFT;
+      direction = Direction.LEFT;
       break;
     case 'ArrowRight':
-      direction = DIRECTION.RIGHT;
+      direction = Direction.RIGHT;
       break;
     case 'ArrowUp':
-      direction = DIRECTION.UP;
+      direction = Direction.UP;
       break;
     case 'ArrowDown':
-      direction = DIRECTION.DOWN;
+      direction = Direction.DOWN;
       break;
     default:
       break;
@@ -127,8 +132,8 @@ img.addEventListener('load', () => {
       RotationToNumber[direction],
       SPRITE_WIDTH,
       SPRITE_HEIGHT,
-      checkPosition(position[AXIS.HORIZONTAL].value),
-      checkPosition(position[AXIS.VERTICAL].value),
+      checkPosition(position[Axis.HORIZONTAL].value),
+      checkPosition(position[Axis.VERTICAL].value),
       SPRITE_WIDTH,
       SPRITE_HEIGHT,
     );
