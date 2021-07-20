@@ -9,8 +9,8 @@ class ClientEngine {
       imageLoaders: [],
       sprites: {},
       images: {},
-      camera: new ClientCamera({canvas, engine: this}),
-      input: new ClientInput(canvas)
+      camera: new ClientCamera({ canvas, engine: this }),
+      input: new ClientInput(canvas),
     });
 
     this.ctx = canvas.getContext('2d');
@@ -38,13 +38,13 @@ class ClientEngine {
   loadSprites(spritesGroup) {
     this.imageLoaders = [];
 
-    for(let groupName in spritesGroup) {
+    for (let groupName in spritesGroup) {
       const group = spritesGroup[groupName];
       this.sprites[groupName] = group;
-     
-      for(let spriteName in group) {
-        const {img} = group[spriteName];
-        if ( !this.images[img] ) {
+
+      for (let spriteName in group) {
+        const { img } = group[spriteName];
+        if (!this.images[img]) {
           this.imageLoaders.push(this.loadImage(img));
         }
       }
@@ -62,9 +62,7 @@ class ClientEngine {
     });
   }
 
-  renderSpriteFrame({
-    sprite, frame, x, y, w, h,
-  }) {
+  renderSpriteFrame({ sprite, frame, x, y, w, h }) {
     const spriteCfg = this.sprites[sprite[0]][sprite[1]];
     const [fx, fy, fw, fh] = spriteCfg.frames[frame];
     const img = this.images[spriteCfg.img];
